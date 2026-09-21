@@ -107,34 +107,60 @@ Other error patterns included:
 
 ## Project Structure
 
+# Project Structure
+
+The project is organized into separate directories for data, experiments,
+model artifacts, application code, testing, and deployment.
+
 ```text
 sentiment-analysis-imdb/
+│
 ├── config/
 │   └── settings.py
+│
 ├── data/
 │   ├── raw/
+│   │   └── IMDB Dataset.csv
 │   └── processed/
+│       ├── train.csv
+│       ├── validation.csv
+│       └── test.csv
+│
 ├── models/
+│   ├── bert_imdb_80_20_split/
 │   └── bert_imdb_80_20_split_final/
+│
 ├── notebooks/
 │   ├── 01_eda_and_data_split.ipynb
 │   ├── 02_bow_and_tfidf.ipynb
 │   ├── 03_word2vec_fasttext_doc2vec.ipynb
 │   ├── 04_bert.ipynb
 │   └── 05_model_comparison.ipynb
+│
 ├── results/
+│   ├── bert_results.csv
+│   ├── bow_tfidf_results.csv
+│   └── word_embeddings_results.csv
+│
 ├── src/
 │   ├── api.py
 │   ├── batch_inference.py
 │   ├── inference.py
 │   └── logging_config.py
+│
 ├── tests/
+│   ├── test_api_csv.py
+│   ├── test_api_predict.py
+│   ├── test_batch_csv.py
+│   ├── test_batch_predictions.py
+│   └── test_inference.py
+│
 ├── .dockerignore
 ├── .gitignore
 ├── Dockerfile
 ├── README.md
 └── requirements.txt
-```
+```text
 
 ## API
 
