@@ -1,12 +1,10 @@
 from fastapi.testclient import TestClient
-from unittest.mock import patch
+from unittest.mock import MagicMock
 
-from src.api import app
+from src.api import app, get_predictor
 
 
 client = TestClient(app)
-
-from src.inference import SentimentPredictor
 
 
 def test_predict_csv_returns_predictions():
@@ -18,20 +16,22 @@ def test_predict_csv_returns_predictions():
         "This movie was terrible!\n"
     )
 
-    with patch.object(
-        SentimentPredictor,
-        "predict_batch",
-        return_value=[
-            {
-                "sentiment": "Positive",
-                "confidence": 0.99
-            },
-            {
-                "sentiment": "Negative",
-                "confidence": 0.98
-            }
-        ]
-    ):
+    predictor = MagicMock()
+
+    predictor.predict_batch.return_value = [
+        {
+            "sentiment": "Positive",
+            "confidence": 0.99
+        },
+        {
+            "sentiment": "Negative",
+            "confidence": 0.98
+        }
+    ]
+
+    app.dependency_overrides[get_predictor] = lambda: predictor
+
+    try:
         response = client.post(
             "/predict/csv",
             files={
@@ -42,6 +42,8 @@ def test_predict_csv_returns_predictions():
                 )
             }
         )
+    finally:
+        app.dependency_overrides.clear()
 
     assert response.status_code == 200
     assert response.headers["content-type"].startswith("text/csv")
@@ -60,16 +62,23 @@ def test_predict_csv_rejects_missing_review_column():
         "This movie was fantastic!\n"
     )
 
-    response = client.post(
-        "/predict/csv",
-        files={
-            "file": (
-                "invalid.csv",
-                csv_content,
-                "text/csv"
-            )
-        }
-    )
+    predictor = MagicMock()
+
+    app.dependency_overrides[get_predictor] = lambda: predictor
+
+    try:
+        response = client.post(
+            "/predict/csv",
+            files={
+                "file": (
+                    "invalid.csv",
+                    csv_content,
+                    "text/csv"
+                )
+            }
+        )
+    finally:
+        app.dependency_overrides.clear()
 
     assert response.status_code == 400
 
@@ -86,13 +95,15 @@ def test_predict_csv_handles_unexpected_error():
         "This movie was fantastic!\n"
     )
 
-    with patch.object(
-        SentimentPredictor,
-        "predict_batch",
-        side_effect=RuntimeError(
-            "Unexpected inference error"
-        )
-    ):
+    predictor = MagicMock()
+
+    predictor.predict_batch.side_effect = RuntimeError(
+        "Unexpected inference error"
+    )
+
+    app.dependency_overrides[get_predictor] = lambda: predictor
+
+    try:
         response = client.post(
             "/predict/csv",
             files={
@@ -103,6 +114,8 @@ def test_predict_csv_handles_unexpected_error():
                 )
             }
         )
+    finally:
+        app.dependency_overrides.clear()
 
     assert response.status_code == 500
 
