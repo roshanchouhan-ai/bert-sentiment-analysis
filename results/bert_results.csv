@@ -1,0 +1,2 @@
+representation,configuration,classifier,accuracy,precision,recall,f1
+BERT,"Fine-tuned BERT, max_length=256, epochs=2",BERT classification head,0.9248764747403448,0.9245585874799358,0.9258589511754068,0.9252083124184319
