@@ -1,9 +1,7 @@
-
 from fastapi.testclient import TestClient
-from unittest.mock import patch
+from unittest.mock import MagicMock
 
-from src.api import app
-from src.inference import SentimentPredictor
+from src.api import app, get_predictor
 
 client = TestClient(app)
 
@@ -11,12 +9,24 @@ client = TestClient(app)
 def test_predict_returns_prediction():
     """Test that a valid prediction request returns sentiment and confidence."""
 
-    response = client.post(
-        "/predict",
-        json={
-            "text": "This movie was absolutely fantastic!"
-        }
-    )
+    predictor = MagicMock()
+
+    predictor.predict.return_value = {
+        "sentiment": "Positive",
+        "confidence": 0.99
+    }
+
+    app.dependency_overrides[get_predictor] = lambda: predictor
+
+    try:
+        response = client.post(
+            "/predict",
+            json={
+                "text": "This movie was absolutely fantastic!"
+            }
+        )
+    finally:
+        app.dependency_overrides.clear()
 
     assert response.status_code == 200
 
@@ -81,23 +91,29 @@ def test_health_check():
 def test_predict_handles_unexpected_error():
     """Test that an unexpected inference error returns HTTP 500."""
 
-    with patch.object(
-        SentimentPredictor,
-        "predict",
-        side_effect=RuntimeError("Unexpected inference error")
-    ):
+    predictor = MagicMock()
+
+    predictor.predict.side_effect = RuntimeError(
+        "Unexpected inference error"
+    )
+
+    app.dependency_overrides[get_predictor] = lambda: predictor
+
+    try:
         response = client.post(
             "/predict",
             json={
                 "text": "This movie was great!"
             }
         )
+    finally:
+        app.dependency_overrides.clear()
 
     assert response.status_code == 500
+
     assert response.json() == {
         "detail": "Internal server error"
     }
-
 
 
 
