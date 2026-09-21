@@ -41,25 +41,38 @@ def test_predict_returns_prediction():
 def test_predict_rejects_empty_text():
     """Test that an empty review is rejected by request validation."""
 
-    response = client.post(
-        "/predict",
-        json={
-            "text": ""
-        }
-    )
+    predictor = MagicMock()
+
+    app.dependency_overrides[get_predictor] = lambda: predictor
+
+    try:
+        response = client.post(
+            "/predict",
+            json={
+                "text": ""
+            }
+        )
+    finally:
+        app.dependency_overrides.clear()
 
     assert response.status_code == 422
-
 
 def test_predict_rejects_whitespace_text():
     """Test that a whitespace-only review is rejected."""
 
-    response = client.post(
-        "/predict",
-        json={
-            "text": "   "
-        }
-    )
+    predictor = MagicMock()
+
+    app.dependency_overrides[get_predictor] = lambda: predictor
+
+    try:
+        response = client.post(
+            "/predict",
+            json={
+                "text": "   "
+            }
+        )
+    finally:
+        app.dependency_overrides.clear()
 
     assert response.status_code == 422
 
@@ -67,12 +80,19 @@ def test_predict_rejects_whitespace_text():
 def test_predict_rejects_invalid_text_type():
     """Test that a non-string review is rejected."""
 
-    response = client.post(
-        "/predict",
-        json={
-            "text": 123
-        }
-    )
+    predictor = MagicMock()
+
+    app.dependency_overrides[get_predictor] = lambda: predictor
+
+    try:
+        response = client.post(
+            "/predict",
+            json={
+                "text": 123
+            }
+        )
+    finally:
+        app.dependency_overrides.clear()
 
     assert response.status_code == 422
 
