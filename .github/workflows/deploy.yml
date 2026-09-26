@@ -1,3 +1,5 @@
+# Test AWS OIDC authentication
+
 name: AWS Authentication Test
 
 on:
