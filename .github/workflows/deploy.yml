@@ -1,6 +1,4 @@
-# Test AWS OIDC authentication
-
-name: AWS Authentication Test
+name: Build and Push Docker Image
 
 on:
   push:
@@ -11,8 +9,13 @@ permissions:
   id-token: write
   contents: read
 
+env:
+  AWS_REGION: ap-south-1
+  ECR_REPOSITORY: imdb-sentiment-api
+  ECR_REGISTRY: 262045878835.dkr.ecr.ap-south-1.amazonaws.com
+
 jobs:
-  aws-auth:
+  build-and-push:
     runs-on: ubuntu-latest
 
     steps:
@@ -25,5 +28,13 @@ jobs:
           role-to-assume: arn:aws:iam::262045878835:role/GitHubActionsDeployRole
           aws-region: ap-south-1
 
-      - name: Verify AWS identity
-        run: aws sts get-caller-identity
+      - name: Login to Amazon ECR
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build Docker image
+        run: |
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:${{ github.sha }} .
+
+      - name: Push Docker image
+        run: |
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:${{ github.sha }}
