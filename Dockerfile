@@ -4,10 +4,17 @@ WORKDIR /app
 
 COPY requirements.txt .
 
+# Install CPU-only PyTorch
+RUN pip install --no-cache-dir \
+    --index-url https://download.pytorch.org/whl/cpu \
+    torch
+
+# Install remaining project dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY src/ src/
 COPY config/ config/
+COPY frontend/ frontend/
 
 EXPOSE 8000
 
