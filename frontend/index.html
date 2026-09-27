@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>IMDb Sentiment Analysis</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <main class="app">
+
+        <!-- Header -->
+        <header class="header">
+
+            <div class="badge">
+                BERT · NLP
+            </div>
+
+            <h1>IMDb Sentiment Analysis</h1>
+
+            <p>
+                Analyze the sentiment of a movie review using a
+                fine-tuned BERT model.
+            </p>
+
+        </header>
+
+
+        <!-- Main Card -->
+        <section class="card">
+
+            <div class="section-header">
+                <h2>Movie Review</h2>
+
+                <span id="character-count">
+                    0 characters
+                </span>
+            </div>
+
+
+            <!-- Review Input -->
+            <textarea
+                id="review"
+                name="review"
+                placeholder="Write or paste your movie review here..."
+                maxlength="5000"
+            ></textarea>
+
+
+            <!-- Action Buttons -->
+            <div class="actions">
+
+                <button
+                    id="analyze-btn"
+                    class="primary-btn"
+                    type="button"
+                >
+                    Analyze Review
+                </button>
+
+
+                <button
+                    id="csv-btn"
+                    class="secondary-btn"
+                    type="button"
+                >
+                    Upload CSV
+                </button>
+
+                <input
+                    type="file"
+                    id="csv-file"
+                    accept=".csv"
+                    hidden
+                >
+
+            </div>
+
+
+            <p class="csv-hint">
+                CSV files must contain a <strong>review</strong> column.
+            </p>
+
+        </section>
+
+
+        <!-- Result -->
+        <section
+            id="result-section"
+            class="result-card"
+            hidden
+        >
+
+            <div class="result-header">
+                <h2>Prediction</h2>
+            </div>
+
+            <div class="result-content">
+
+                <div class="sentiment-result">
+
+                    <span class="result-label">
+                        Sentiment
+                    </span>
+
+                    <span id="sentiment">
+                        —
+                    </span>
+
+                </div>
+
+
+                <div class="confidence-result">
+
+                    <span class="result-label">
+                        Confidence
+                    </span>
+
+                    <span id="confidence">
+                        —
+                    </span>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- Error -->
+        <div
+            id="error-message"
+            class="error-message"
+            hidden
+        ></div>
+
+
+        <!-- Footer -->
+        <footer class="footer">
+
+            <span>
+                Fine-tuned BERT
+            </span>
+
+            <span>•</span>
+
+            <span>
+                FastAPI
+            </span>
+
+            <span>•</span>
+
+            <span>
+                Docker
+            </span>
+
+        </footer>
+
+    </main>
+
+
+    <script src="script.js"></script>
+
+</body>
+
+</html>

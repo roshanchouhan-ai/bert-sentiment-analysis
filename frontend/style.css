@@ -1,0 +1,373 @@
+/* =========================
+   Global
+   ========================= */
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    min-height: 100vh;
+    font-family: Arial, Helvetica, sans-serif;
+    background: #111111;
+    color: #f5f5f5;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    padding: 40px 20px;
+}
+
+
+/* =========================
+   Main Application
+   ========================= */
+
+.app {
+    width: 100%;
+    max-width: 820px;
+}
+
+
+/* =========================
+   Header
+   ========================= */
+
+.header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.badge {
+    display: inline-block;
+
+    padding: 6px 12px;
+    margin-bottom: 14px;
+
+    border: 1px solid #444444;
+    border-radius: 999px;
+
+    font-size: 12px;
+    font-weight: bold;
+    letter-spacing: 1px;
+
+    color: #cccccc;
+    background: #1b1b1b;
+}
+
+.header h1 {
+    font-size: 38px;
+    line-height: 1.2;
+    margin-bottom: 12px;
+}
+
+.header p {
+    max-width: 620px;
+    margin: 0 auto;
+
+    color: #aaaaaa;
+    font-size: 16px;
+    line-height: 1.6;
+}
+
+
+/* =========================
+   Main Review Card
+   ========================= */
+
+.card {
+    background: #1a1a1a;
+
+    border: 1px solid #333333;
+    border-radius: 16px;
+
+    padding: 28px;
+
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.35);
+}
+
+
+/* =========================
+   Section Header
+   ========================= */
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    margin-bottom: 14px;
+}
+
+.section-header h2 {
+    font-size: 20px;
+}
+
+#character-count {
+    font-size: 13px;
+    color: #888888;
+}
+
+
+/* =========================
+   Review Textarea
+   ========================= */
+
+textarea {
+    width: 100%;
+    min-height: 230px;
+
+    resize: vertical;
+
+    padding: 18px;
+
+    border: 1px solid #444444;
+    border-radius: 12px;
+
+    background: #101010;
+    color: #f5f5f5;
+
+    font-family: inherit;
+    font-size: 16px;
+    line-height: 1.6;
+
+    outline: none;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+textarea::placeholder {
+    color: #666666;
+}
+
+textarea:focus {
+    border-color: #777777;
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.05);
+}
+
+
+/* =========================
+   Buttons
+   ========================= */
+
+.actions {
+    display: flex;
+    gap: 12px;
+
+    margin-top: 18px;
+}
+
+button {
+    border: none;
+    border-radius: 10px;
+
+    padding: 13px 20px;
+
+    font-family: inherit;
+    font-size: 15px;
+    font-weight: bold;
+
+    cursor: pointer;
+
+    transition:
+        transform 0.15s ease,
+        opacity 0.15s ease,
+        background 0.15s ease;
+}
+
+button:hover {
+    transform: translateY(-1px);
+}
+
+button:active {
+    transform: translateY(0);
+}
+
+
+/* Analyze button */
+
+.primary-btn {
+    flex: 1;
+
+    background: #f5f5f5;
+    color: #111111;
+}
+
+.primary-btn:hover {
+    background: #dddddd;
+}
+
+
+/* CSV button */
+
+.secondary-btn {
+    background: #292929;
+    color: #f5f5f5;
+
+    border: 1px solid #444444;
+}
+
+.secondary-btn:hover {
+    background: #333333;
+}
+
+
+/* Disabled button */
+
+button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+
+/* =========================
+   CSV Hint
+   ========================= */
+
+.csv-hint {
+    margin-top: 12px;
+
+    color: #777777;
+    font-size: 13px;
+}
+
+.csv-hint strong {
+    color: #aaaaaa;
+}
+
+
+/* =========================
+   Result Card
+   ========================= */
+
+.result-card {
+    margin-top: 20px;
+
+    background: #1a1a1a;
+
+    border: 1px solid #333333;
+    border-radius: 16px;
+
+    padding: 24px;
+
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+}
+
+.result-header {
+    margin-bottom: 20px;
+}
+
+.result-header h2 {
+    font-size: 20px;
+}
+
+.result-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+}
+
+.sentiment-result,
+.confidence-result {
+    background: #101010;
+
+    border: 1px solid #2f2f2f;
+    border-radius: 12px;
+
+    padding: 18px;
+}
+
+.result-label {
+    display: block;
+
+    margin-bottom: 8px;
+
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+
+    color: #777777;
+}
+
+#sentiment {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+#confidence {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+
+/* =========================
+   Error Message
+   ========================= */
+
+.error-message {
+    margin-top: 16px;
+
+    padding: 14px 16px;
+
+    border: 1px solid #4a3030;
+    border-radius: 10px;
+
+    background: #241515;
+    color: #ffb3b3;
+
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+
+/* =========================
+   Footer
+   ========================= */
+
+.footer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+
+    margin-top: 24px;
+
+    color: #666666;
+    font-size: 13px;
+}
+
+
+/* =========================
+   Responsive Design
+   ========================= */
+
+@media (max-width: 650px) {
+
+    body {
+        padding: 25px 15px;
+    }
+
+    .header h1 {
+        font-size: 30px;
+    }
+
+    .card,
+    .result-card {
+        padding: 20px;
+    }
+
+    .actions {
+        flex-direction: column;
+    }
+
+    .result-content {
+        grid-template-columns: 1fr;
+    }
+
+}

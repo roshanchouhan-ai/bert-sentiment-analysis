@@ -8,10 +8,11 @@ from fastapi import FastAPI, HTTPException, Depends
 from pydantic import BaseModel, Field, field_validator
 
 from fastapi import UploadFile, File
-import tempfile
-from pathlib import Path
 
-from fastapi.responses import FileResponse
+from pathlib import Path
+from fastapi.staticfiles import StaticFiles
+
+
 from fastapi.responses import StreamingResponse
 from io import StringIO
 
@@ -19,6 +20,8 @@ from io import StringIO
 from src.inference import SentimentPredictor
 from src.batch_inference import predict_csv
 from config.settings import MODEL_PATH
+
+from fastapi.middleware.cors import CORSMiddleware
 
 setup_logging()
 
@@ -29,6 +32,14 @@ app = FastAPI(
     title="IMDb Sentiment Analysis API",
     description="API for sentiment prediction using fine-tuned BERT.",
     version="1.0.0"
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=False,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 
@@ -134,3 +145,13 @@ def predict_csv_endpoint(
             status_code=500,
             detail="Internal server error"
         )
+
+
+
+FRONTEND_DIR = Path(__file__).resolve().parent.parent / "frontend"
+
+app.mount(
+    "/",
+    StaticFiles(directory=FRONTEND_DIR, html=True),
+    name="frontend"
+)
