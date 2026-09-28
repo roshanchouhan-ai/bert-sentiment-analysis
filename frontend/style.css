@@ -118,7 +118,7 @@ body {
 
 textarea {
     width: 100%;
-    min-height: 230px;
+    min-height: 150px;
 
     resize: vertical;
 
