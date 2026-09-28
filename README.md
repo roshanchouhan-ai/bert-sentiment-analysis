@@ -13,11 +13,7 @@ The application provides an interactive web interface for sentiment prediction, 
 
 ![IMDb Sentiment Analysis Application](assets/app-screenshot.png)
 
-The application allows users to enter a movie review and submit it for sentiment analysis.
-
-![IMDb Sentiment Analysis Prediction](assets/app-working.png)
-
-The fine-tuned BERT model returns the predicted sentiment along with its confidence score.
+The application allows users to enter a movie review and receive a sentiment prediction with its confidence score.
 
 ### Swagger API Documentation
 
