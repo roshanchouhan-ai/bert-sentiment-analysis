@@ -1,83 +1,131 @@
 # IMDb Sentiment Analysis
 
-An end-to-end sentiment analysis project using the IMDb movie review dataset. The project compares classical NLP techniques with neural word embeddings and a fine-tuned BERT model, then deploys the final model through a FastAPI service with Docker and automated testing.
+An end-to-end sentiment analysis project using the IMDb movie review dataset.
+
+The project progresses from classical NLP techniques and neural word embeddings to a fine-tuned BERT model, followed by inference API development, automated testing, Docker containerization, CI/CD, and cloud deployment.
+
+---
+## Project Demo
+
+The application provides an interactive web interface for sentiment prediction, along with REST API endpoints for single-review and CSV batch inference.
+
+### Web Application
+
+![IMDb Sentiment Analysis Application](assets/app-screenshot.png)
+
+The application allows users to enter a movie review and submit it for sentiment analysis.
+
+![IMDb Sentiment Analysis Prediction](assets/app-working.png)
+
+The fine-tuned BERT model returns the predicted sentiment along with its confidence score.
+
+### Swagger API Documentation
+
+FastAPI provides interactive API documentation for the prediction endpoints.
+
+![Swagger API Documentation](assets/swagger.png)
+
+---
 
 ## Overview
 
-The project evaluates:
+The project evaluates multiple approaches for binary sentiment classification:
 
-* Bag of Words
-* TF-IDF
-* Word2Vec
-* FastText
-* Doc2Vec
-* BERT
+- Bag of Words
+- TF-IDF
+- Word2Vec
+- FastText
+- Doc2Vec
+- BERT
 
-The final BERT model is exposed through a FastAPI API supporting single-review and CSV batch inference.
+The final BERT model is integrated into a FastAPI application supporting single-review and CSV batch inference.
+
+The application includes request validation, error handling, logging, automated testing, Docker support, CI/CD, and AWS deployment.
+
+---
 
 ## Project Highlights
 
-* Exploratory data analysis and fixed train/validation/test split
-* Comparison of multiple NLP representations
-* Fine-tuned BERT for binary sentiment classification
-* Model evaluation using accuracy, precision, recall, and F1
-* BERT error analysis
-* Single and batch inference
-* Pydantic request validation
-* Logging and exception handling
-* Automated testing with pytest
-* Dockerized API
+- Exploratory data analysis and preprocessing
+- Fixed train/validation/test split
+- Comparison of classical NLP representations and word embeddings
+- Fine-tuned BERT for sentiment classification
+- Evaluation using accuracy, precision, recall, and F1
+- BERT error analysis
+- Single-review inference
+- CSV batch inference
+- Pydantic request validation
+- Exception handling and logging
+- Automated testing with pytest
+- Dockerized FastAPI application
+- GitHub Actions CI/CD
+- Amazon ECR image registry
+- AWS EC2 deployment
+- AWS Systems Manager based deployment
+- Post-deployment health checks
+- Interactive Swagger API documentation
+
+---
 
 ## Dataset
 
-The IMDb dataset contains movie reviews labeled as `positive` or `negative`.
+The IMDb dataset contains 50,000 movie reviews labeled as `positive` or `negative`.
 
 Dataset split:
 
-* 72% training
-* 8% validation
-* 20% testing
+- 72% training
+- 8% validation
+- 20% testing
 
 The same fixed split was used across experiments, with the test set reserved for final evaluation.
+
+---
 
 ## Model Comparison
 
 Results on the fixed test set:
 
-| Model        |   Accuracy |  Precision |     Recall |         F1 |
-| ------------ | ---------: | ---------: | ---------: | ---------: |
-| Bag of Words |     90.28% |     89.90% |     90.84% |     90.37% |
-| TF-IDF       |     89.59% |     88.56% |     91.02% |     89.77% |
-| Doc2Vec      |     89.33% |     89.82% |     88.81% |     89.31% |
-| Word2Vec     |     88.19% |     87.91% |     88.67% |     88.29% |
-| FastText     |     88.19% |     87.97% |     88.59% |     88.28% |
-| **BERT**     | **92.49%** | **92.46%** | **92.59%** | **92.52%** |
+| Model | Accuracy | Precision | Recall | F1 |
+|---|---:|---:|---:|---:|
+| Bag of Words | 90.28% | 89.90% | 90.84% | 90.37% |
+| TF-IDF | 89.59% | 88.56% | 91.02% | 89.77% |
+| Doc2Vec | 89.33% | 89.82% | 88.81% | 89.31% |
+| Word2Vec | 88.19% | 87.91% | 88.67% | 88.29% |
+| FastText | 88.19% | 87.97% | 88.59% | 88.28% |
+| **BERT** | **92.49%** | **92.46%** | **92.59%** | **92.52%** |
 
 These results reflect this particular experimental setup and are not intended as universal comparisons between the techniques.
 
+---
+
 ## BERT
 
-Configuration:
+### Configuration
 
-* Maximum sequence length: `256`
-* Epochs: `2`
-* Learning rate: `2e-5`
-* Batch size: `8`
+- Maximum sequence length: `256`
+- Epochs: `2`
+- Learning rate: `2e-5`
+- Batch size: `8`
+- Model: BERT fine-tuned for binary sequence classification
 
-Final test performance:
+### Final Test Performance
 
-* Accuracy: **92.49%**
-* Precision: **92.46%**
-* Recall: **92.59%**
-* F1: **92.52%**
+- Accuracy: **92.49%**
+- Precision: **92.46%**
+- Recall: **92.59%**
+- F1: **92.52%**
 
-The trained model is stored locally at:
+The trained model is excluded from Git because of its size.
+
+For local inference, the model is expected at:
 
 ```text
 models/bert_imdb_80_20_split_final/
-```
+````
 
-The model files are excluded from Git because of their size.
+The deployed application downloads the model from Hugging Face at runtime using the configured model path.
+
+---
 
 ## BERT Error Analysis
 
@@ -90,77 +138,54 @@ Confusion matrix:
 
 Review-length analysis showed:
 
-* 43.30% of test reviews contained more than 256 tokens.
-* 58.93% of model errors involved reviews longer than 256 tokens.
-* Error rate for reviews >256 tokens: 10.22%.
-* Error rate for reviews ≤256 tokens: 5.44%.
+- 43.30% of test reviews contained more than 256 tokens.
+- 58.93% of model errors involved reviews longer than 256 tokens.
+- Error rate for reviews >256 tokens: 10.22%.
+- Error rate for reviews ≤256 tokens: 5.44%.
 
 This shows an association between longer reviews and higher error rates in this experiment, but does not establish sequence truncation as the direct cause.
 
 Other error patterns included:
 
-* Mixed or conflicting sentiment
-* Sarcasm and irony
-* Nuanced reviews
-* Misleading phrases without broader context
-* Potentially ambiguous labels
+- Mixed or conflicting sentiment
+- Sarcasm and irony
+- Nuanced reviews
+- Misleading phrases without broader context
+- Potentially ambiguous labels
 
-## Project Structure
+---
 
-# Project Structure
+## Software Engineering
 
-The project is organized into separate directories for data, experiments,
-model artifacts, application code, testing, and deployment.
+The project was extended beyond model training into an end-to-end ML application.
 
-```text
-sentiment-analysis-imdb/
-│
-├── config/
-│   └── settings.py
-│
-├── data/
-│   ├── raw/
-│   │   └── IMDB Dataset.csv
-│   └── processed/
-│       ├── train.csv
-│       ├── validation.csv
-│       └── test.csv
-│
-├── models/
-│   ├── bert_imdb_80_20_split/
-│   └── bert_imdb_80_20_split_final/
-│
-├── notebooks/
-│   ├── 01_eda_and_data_split.ipynb
-│   ├── 02_bow_and_tfidf.ipynb
-│   ├── 03_word2vec_fasttext_doc2vec.ipynb
-│   ├── 04_bert.ipynb
-│   └── 05_model_comparison.ipynb
-│
-├── results/
-│   ├── bert_results.csv
-│   ├── bow_tfidf_results.csv
-│   └── word_embeddings_results.csv
-│
-├── src/
-│   ├── api.py
-│   ├── batch_inference.py
-│   ├── inference.py
-│   └── logging_config.py
-│
-├── tests/
-│   ├── test_api_csv.py
-│   ├── test_api_predict.py
-│   ├── test_batch_csv.py
-│   ├── test_batch_predictions.py
-│   └── test_inference.py
-│
-├── .dockerignore
-├── .gitignore
-├── Dockerfile
-├── README.md
-└── requirements.txt
-```text
+### Inference Layer
+
+The trained BERT model is loaded through a dedicated inference component responsible for:
+
+- Tokenization
+- Model inference
+- Sentiment prediction
+- Confidence calculation
+- Input validation
+- Batch inference
+
+### FastAPI
+
+The inference logic is exposed through REST API endpoints.
+
+The API includes:
+
+- Request schemas using Pydantic
+- Input validation
+- Exception handling
+- Logging
+- Single-review prediction
+- CSV batch prediction
+- Health check endpoint
+- Automatic Swagger documentation
+
+---
 
 ## API
 
@@ -169,6 +194,8 @@ sentiment-analysis-imdb/
 ```http
 GET /health
 ```
+
+Response:
 
 ```json
 {
@@ -209,79 +236,14 @@ Upload a CSV containing a `review` column.
 
 The API returns the original reviews with:
 
-* `predicted_sentiment`
-* `confidence`
+- `predicted_sentiment`
+- `confidence`
 
-## Running Locally
-
-### 1. Clone the repository
-
-```bash
-git clone <repository-url>
-cd sentiment-analysis-imdb
-```
-
-### 2. Create and activate a virtual environment
-
-```bash
-python -m venv .venv
-```
-
-Windows PowerShell:
-
-```powershell
-.venv\Scripts\Activate.ps1
-```
-
-### 3. Install dependencies
-
-```bash
-pip install -r requirements.txt
-```
-
-### 4. Place the trained model
-
-Place the model at:
-
-```text
-models/bert_imdb_80_20_split_final/
-```
-
-### 5. Start the API
-
-```bash
-python -m uvicorn src.api:app --reload
-```
-
-API:
-
-```text
-http://127.0.0.1:8000
-```
-
-Swagger documentation:
-
-```text
-http://127.0.0.1:8000/docs
-```
-
-## Running with Docker
-
-Build the image:
-
-```bash
-docker build -t imdb-sentiment-api .
-```
-
-Run the container from PowerShell:
-
-```powershell
-docker run --rm -p 8000:8000 -v "${PWD}\models:/app/models" imdb-sentiment-api
-```
-
-The model directory is mounted into the container rather than copied into the Docker image.
+---
 
 ## Testing
+
+The project uses `pytest` for automated testing.
 
 Run the complete test suite:
 
@@ -297,32 +259,290 @@ Current result:
 
 Tests cover:
 
-* API endpoints
-* Request validation
-* Error handling
-* CSV upload and validation
-* Batch prediction
-* Inference logic
+- API endpoints
+- Request validation
+- Error handling
+- CSV upload and validation
+- Batch prediction
+- Inference logic
+
+Mocking is used where appropriate to isolate components and avoid unnecessary model inference during unit tests.
+
+---
+
+## Docker
+
+The FastAPI application is containerized using Docker.
+
+### Build the Image
+
+```bash
+docker build -t imdb-sentiment-api .
+```
+
+### Local Run
+
+For local development, the trained model can be mounted into the container:
+
+```powershell
+docker run --rm -p 8000:8000 -v "${PWD}\models\:/app/models" imdb-sentiment-api
+```
+
+For cloud deployment, the large model artifact is not included in the Docker image. The application receives the model identifier through the `MODEL_PATH` environment variable and downloads the model from Hugging Face at runtime.
+
+This keeps the application image smaller and separates the application image from the model artifact.
+
+---
+
+## CI/CD
+
+GitHub Actions is used to automate testing, Docker image building, and deployment.
+
+The workflow:
+
+1. Runs the test suite on pushes and pull requests.
+2. Builds the Docker image on pushes to `main`.
+3. Pushes the image to Amazon ECR.
+4. Uses AWS Systems Manager to deploy the image to EC2.
+5. Starts the new Docker container.
+6. Runs a `/health` check before marking the deployment successful.
+
+GitHub authenticates with AWS using OpenID Connect (OIDC), avoiding long-lived AWS access keys in the repository.
+
+---
+
+## Deployment
+
+The application is deployed as a Dockerized FastAPI service on an AWS EC2 instance.
+
+### Deployment Architecture
+
+```text
+Git Push
+   ↓
+GitHub Actions
+   ↓
+Run Tests
+   ↓
+Build Docker Image
+   ↓
+Amazon ECR
+   ↓
+AWS Systems Manager
+   ↓
+EC2
+   ↓
+Docker Container
+   ↓
+FastAPI + BERT
+   ↓
+Health Check
+```
+
+### AWS Components
+
+- **Amazon EC2** — hosts the containerized application
+- **Amazon ECR** — stores Docker images
+- **AWS Systems Manager (SSM)** — executes deployment commands on EC2
+- **AWS IAM** — controls AWS permissions
+- **GitHub OIDC** — provides secure GitHub Actions authentication to AWS
+
+The deployment is triggered automatically when changes are pushed to the `main` branch.
+
+A post-deployment health check verifies that the FastAPI application is responding successfully before the deployment is marked as successful.
+
+---
+
+## Project Structure
+
+```text
+sentiment-analysis-imdb/
+│
+├── .github/
+│   └── workflows/
+│       └── deploy.yml
+│
+├── config/
+│   └── settings.py
+│
+├── data/
+│   ├── raw/
+│   └── processed/
+│
+├── frontend/
+│   ├── index.html
+│   ├── script.js
+│   └── style.css
+│
+├── models/
+│   └── ...
+│
+├── notebooks/
+│   ├── 01_eda_and_data_split.ipynb
+│   ├── 02_bow_and_tfidf.ipynb
+│   ├── 03_word2vec_fasttext_doc2vec.ipynb
+│   ├── 04_bert.ipynb
+│   └── 05_model_comparison.ipynb
+│
+├── results/
+│   ├── bert_results.csv
+│   ├── bow_tfidf_results.csv
+│   └── word_embeddings_results.csv
+│
+├── src/
+│   ├── api.py
+│   ├── batch_inference.py
+│   ├── inference.py
+│   └── logging_config.py
+│
+├── tests/
+│   ├── test_api_csv.py
+│   ├── test_api_predict.py
+│   ├── test_batch_csv.py
+│   ├── test_batch_predictions.py
+│   └── test_inference.py
+│
+├── .dockerignore
+├── .gitignore
+├── Dockerfile
+├── README.md
+└── requirements.txt
+```
+
+---
+
+## Running Locally
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/roshanchouhan-ai/bert-sentiment-analysis.git
+cd bert-sentiment-analysis
+```
+
+### 2. Install Dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+### 3. Place the Trained Model
+
+Place the trained model at:
+
+```text
+models/bert_imdb_80_20_split_final/
+```
+
+### 4. Start the API
+
+```bash
+python -m uvicorn src.api:app --reload
+```
+
+Application:
+
+```text
+http://127.0.0.1:8000
+```
+
+Swagger documentation:
+
+```text
+http://127.0.0.1:8000/docs
+```
+
+---
 
 ## Technologies
 
-* Python
-* PyTorch
-* Hugging Face Transformers
-* FastAPI
-* Pydantic
-* Pandas
-* NumPy
-* Pytest
-* Docker
-* Jupyter Notebook
+### Machine Learning & NLP
+
+- Python
+- PyTorch
+- Hugging Face Transformers
+- Scikit-learn
+- Gensim
+- Pandas
+- NumPy
+
+### Backend & Testing
+
+- FastAPI
+- Pydantic
+- Pytest
+
+### Deployment & DevOps
+
+- Docker
+- Git
+- GitHub Actions
+- Linux
+- AWS EC2
+- Amazon ECR
+- AWS Systems Manager
+- AWS IAM
+- GitHub OIDC
+
+### Development
+
+- Jupyter Notebook
+
+---
+
+## What This Project Demonstrates
+
+This project goes beyond training a machine learning model.
+
+It demonstrates the workflow of taking an NLP model from experimentation to a usable, deployed application:
+
+```text
+Data
+ ↓
+EDA & Preprocessing
+ ↓
+Classical NLP Experiments
+ ↓
+Embedding Experiments
+ ↓
+BERT Fine-tuning
+ ↓
+Evaluation & Error Analysis
+ ↓
+Inference Pipeline
+ ↓
+FastAPI
+ ↓
+Validation & Error Handling
+ ↓
+Automated Testing
+ ↓
+Docker
+ ↓
+CI/CD
+ ↓
+Cloud Deployment
+ ↓
+Post-deployment Health Check
+```
+
+The project provided practical exposure to both **machine learning development** and the **software engineering required to serve and deploy a machine learning model as an application**.
+
+---
 
 ## Future Improvements
 
-* GitHub Actions CI
-* Cloud deployment
-* Model hosting and automated model download
-* API authentication
-* Performance monitoring
-* Further error analysis
-* Experiments with longer sequence lengths
+Potential future improvements include:
+
+- API authentication
+- HTTPS and custom domain
+- Rate limiting
+- Performance and load testing
+- Centralized monitoring and observability
+- Model versioning and model registry
+- Automated rollback
+- Longer sequence-length experiments
+- Production-grade model serving and scaling
+- Model drift monitoring
+
+```
